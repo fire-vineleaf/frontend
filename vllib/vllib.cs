@@ -27,6 +27,12 @@ namespace vllib
             return get(uri);
         }
 
+        public SimpleJSON.JSONNode getHallo()
+        {
+            string uri = "hallo.php";
+            return get(uri);
+        }
+
 
 
         private SimpleJSON.JSONNode get(string uri)
