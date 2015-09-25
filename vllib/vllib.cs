@@ -34,6 +34,40 @@ namespace vllib
         }
 
 
+        public void createMessage(string to, string subject, string content)
+        {
+            string json = "{\"subject\":\"" + subject + "\",\"content\":\"" + content + "\",\"participants\":[" + to + "]}";
+            string uri = "api.php?a=message";
+            post(uri, json);
+        }
+
+        public void replyToMessage(int messageId, string reply)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{\"reply\":\"" + reply + "\"}");
+            string json = sb.ToString();
+            string uri = "api.php?a=reply&id=" + messageId;
+            post(uri, json);
+        }
+
+        public SimpleJSON.JSONArray getMessages()
+        {
+            string uri = "api.php?a=messages";
+            return (SimpleJSON.JSONArray)get(uri);
+        }
+
+        public SimpleJSON.JSONArray getReplies(int id)
+        {
+            string uri = "api.php?a=replies&id=" + id;
+            return (SimpleJSON.JSONArray) get(uri);
+        }
+
+        public SimpleJSON.JSONNode getMessage(int id)
+        {
+            string uri = "api.php?a=message&id="+id;
+            return get(uri);
+        }
+
 
         private SimpleJSON.JSONNode get(string uri)
         {
@@ -59,9 +93,7 @@ namespace vllib
                 }
 
             }
-
             var response = (HttpWebResponse)request.GetResponse();
-
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
         }
 
