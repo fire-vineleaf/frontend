@@ -21,19 +21,22 @@ namespace vllib
 
         }
 
+        #region "players"
         public SimpleJSON.JSONNode getPlayer()
         {
             string uri = "api.php?a=player";
             return get(uri);
         }
 
-        public SimpleJSON.JSONNode getHallo()
+        public SimpleJSON.JSONArray getPlayers()
         {
-            string uri = "hallo.php";
-            return get(uri);
+            string uri = "api.php?a=players";
+            return (SimpleJSON.JSONArray)get(uri);
         }
+        #endregion
 
 
+        #region "messages"
         public void createMessage(string to, string subject, string content)
         {
             string json = "{\"subject\":\"" + subject + "\",\"content\":\"" + content + "\",\"participants\":[" + to + "]}";
@@ -59,16 +62,17 @@ namespace vllib
         public SimpleJSON.JSONArray getReplies(int id)
         {
             string uri = "api.php?a=replies&id=" + id;
-            return (SimpleJSON.JSONArray) get(uri);
+            return (SimpleJSON.JSONArray)get(uri);
         }
 
         public SimpleJSON.JSONNode getMessage(int id)
         {
-            string uri = "api.php?a=message&id="+id;
+            string uri = "api.php?a=message&id=" + id;
             return get(uri);
         }
+        #endregion
 
-
+        #region "private"
         private SimpleJSON.JSONNode get(string uri)
         {
             HttpWebRequest request = getRequest(uri);
@@ -105,6 +109,7 @@ namespace vllib
             request.Headers.Add("Authorization", "Basic " + token);
             return request;
         }
+        #endregion
 
     }
 
