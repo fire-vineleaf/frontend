@@ -1,0 +1,10 @@
+C:\_projects\vllib\vllib\obj\Debug\vllib.csprojResolveAssemblyReference.cache
+C:\_projects\vllib\vllib\bin\Debug\vllib.dll
+C:\_projects\vllib\vllib\bin\Debug\vllib.pdb
+C:\_projects\vllib\vllib\obj\Debug\vllib.dll
+C:\_projects\vllib\vllib\obj\Debug\vllib.pdb
+C:\_projects\vllib\frontend\vllib\bin\Debug\vllib.dll
+C:\_projects\vllib\frontend\vllib\bin\Debug\vllib.pdb
+C:\_projects\vllib\frontend\vllib\obj\Debug\vllib.csprojResolveAssemblyReference.cache
+C:\_projects\vllib\frontend\vllib\obj\Debug\vllib.dll
+C:\_projects\vllib\frontend\vllib\obj\Debug\vllib.pdb
