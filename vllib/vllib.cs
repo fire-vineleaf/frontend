@@ -33,10 +33,86 @@ namespace vllib
             string uri = "api.php?a=players";
             return (SimpleJSON.JSONArray)get(uri);
         }
+
+        /// <summary>
+        /// gets my invitations to other clans
+        /// </summary>
+        /// <returns></returns>
+        public SimpleJSON.JSONArray getInvitations()
+        {
+            string uri = "api.php?a=invitations";
+            return (SimpleJSON.JSONArray)get(uri);
+        }
+        #endregion
+
+
+        #region "clan"
+
+        /// <summary>
+        /// creates my new clan -> makes me boss
+        /// </summary>
+        /// <param name="name"></param>
+        public void createClan(string name)
+        {
+            string json = "{\"name\":\"" + name+ "\"}";
+            string uri = "api.php?a=clan";
+            post(uri, json);
+        }
+
+        /// <summary>
+        /// disbands my own clan
+        /// </summary>
+        public void disbandClan()
+        {
+            string uri = "api.php?a=disband";
+            delete(uri, null);
+        }
+
+        /// <summary>
+        /// makes me leave my clan
+        /// </summary>
+        public void leaveClan()
+        {
+            string uri = "api.php?a=leave";
+            post(uri, null);
+        }
+
+        /// <summary>
+        /// invites a player to my clan
+        /// </summary>
+        /// <param name="id">playerId</param>
+        public void invitePlayer(string id)
+        {
+            string uri = "api.php?a=invite&id=" + id;
+            post(uri, null);
+        }
+
+        /// <summary>
+        /// gets clan members of any clan
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public SimpleJSON.JSONArray getClanMembers(string id)
+        {
+            string uri = "api.php?a=members&id="+id;
+            return (SimpleJSON.JSONArray)get(uri);
+        }
+
         #endregion
 
 
         #region "messages"
+
+        /// <summary>
+        /// deletes a message
+        /// </summary>
+        /// <param name="id"></param>
+        public void deleteMessage(string id)
+        {
+            string uri = "api.php?a=message&id=" + id;
+            delete(uri, null);
+        }
+
         public void createMessage(string to, string subject, string content)
         {
             string json = "{\"subject\":\"" + subject + "\",\"content\":\"" + content + "\",\"participants\":[" + to + "]}";
@@ -81,11 +157,19 @@ namespace vllib
             return SimpleJSON.JSON.Parse(responseString);
         }
 
-
         private void post(string uri, string json)
         {
+            anyRequest("POST", uri, json);
+        }
+
+        private void delete(string uri, string json)
+        {
+            anyRequest("DELETE", uri, json);
+        }
+
+        private void anyRequest(string method, string uri, string json) {
             HttpWebRequest request = getRequest(uri);
-            request.Method = "POST";
+            request.Method = method;
             request.ContentType = "text/json";
             if (json != null)
             {
@@ -99,6 +183,7 @@ namespace vllib
             }
             var response = (HttpWebResponse)request.GetResponse();
             var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+
         }
 
         private HttpWebRequest getRequest(string uri)
