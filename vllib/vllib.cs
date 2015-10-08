@@ -7,6 +7,22 @@ using System.IO;
 
 namespace vllib
 {
+    public class ApiException : Exception
+    {
+            public ApiException()
+    {
+    }
+
+    public ApiException(string message)
+        : base(message)
+    {
+    }
+
+    public ApiException(string message, Exception inner) : base(message, inner)
+    {
+    }
+    }
+
     public class vllib
     {
         private string _host;
@@ -113,11 +129,11 @@ namespace vllib
             delete(uri, null);
         }
 
-        public void createMessage(string to, string subject, string content)
+        public SimpleJSON.JSONNode createMessage(string to, string subject, string content)
         {
             string json = "{\"subject\":\"" + subject + "\",\"content\":\"" + content + "\",\"participants\":[" + to + "]}";
             string uri = "api.php?a=message";
-            post(uri, json);
+            return post(uri, json);
         }
 
         public void replyToMessage(int messageId, string reply)
@@ -157,17 +173,17 @@ namespace vllib
             return SimpleJSON.JSON.Parse(responseString);
         }
 
-        private void post(string uri, string json)
+        private SimpleJSON.JSONNode post(string uri, string json)
         {
-            anyRequest("POST", uri, json);
+            return anyRequest("POST", uri, json);
         }
 
-        private void delete(string uri, string json)
+        private SimpleJSON.JSONNode delete(string uri, string json)
         {
-            anyRequest("DELETE", uri, json);
+            return anyRequest("DELETE", uri, json);
         }
 
-        private void anyRequest(string method, string uri, string json) {
+        private SimpleJSON.JSONNode anyRequest(string method, string uri, string json) {
             HttpWebRequest request = getRequest(uri);
             request.Method = method;
             request.ContentType = "text/json";
@@ -179,11 +195,23 @@ namespace vllib
                 {
                     stream.Write(data, 0, data.Length);
                 }
-
             }
-            var response = (HttpWebResponse)request.GetResponse();
-            var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+            System.Net.HttpWebResponse response = null;
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+                var responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
+                return SimpleJSON.JSON.Parse(responseString);
+            }
+            catch (System.Net.WebException ex)
+            {
+                switch (((System.Net.HttpWebResponse) ex.Response).StatusCode) {
+                   case HttpStatusCode.Unauthorized:
+                        throw new ApiException("strUnauthorized");
+                }
 
+                throw new ApiException(ex.Message, ex.InnerException);
+            }
         }
 
         private HttpWebRequest getRequest(string uri)
